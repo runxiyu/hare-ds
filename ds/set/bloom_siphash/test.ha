@@ -58,7 +58,7 @@ fn put_le64(dst: *[8]u8, v: u64) []u8 = {
 
 				for (let i = 0z; i < len(missing); i += 1) {
 					let key = put_le64(&buf, missing[i]);
-					assert(!set::contains(iface, key), "bloom_siphash: false positive");
+					// False positives are fine it's a bloom filter
 				};
 			};
 		};
