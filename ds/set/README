@@ -1,0 +1,4 @@
+set: general-purpose set data structures
+
+You should create a set with the `new` function in each submodule.
+Then, you may use functions defined in this module to manipulate the set.
