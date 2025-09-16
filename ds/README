@@ -1,0 +1,4 @@
+ds: data structures
+
+The "ds" module provides a collection of data structures implemented in
+pure Hare.

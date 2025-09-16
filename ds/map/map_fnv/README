@@ -1,0 +1,7 @@
+map_fnv: key-value map implemented as a Fowler-Noll-Vo hashmap
+
+This module provides a simple implementation of a hashmap using the
+Fowler-Noll-Vo (FNV) hashing algorithm.
+
+FNV is not collision-resistant, so it should only be used for trusted keys
+(i.e., not user input that could be deliberately chosen to cause collisions).
