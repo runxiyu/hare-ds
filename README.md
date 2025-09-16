@@ -7,7 +7,7 @@ Hare programming language.
 
 ## Note
 
-**The maintainers of Hare would likely not recommend using this library.**
+The maintainers of Hare would not recommend using this library.
 
 From [Why doesn’t Hare have generics?](https://harelang.org/documentation/faq.html#why-doesn-t-hare-have-generics),
 
