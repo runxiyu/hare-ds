@@ -1,39 +1,45 @@
 // SPDX-License-Identifier: Apache-2.0 AND MPL-2.0
-// SPDX-FileCopyrightText: 2024 The Cockroach Authors
-// SPDX-FileCopyrightText: 2025 Runxi Yu
+// SPDX-FileCopyrightText: 2025 Runxi Yu <me@runxiyu.org>
 
 use errors;
 use ds::map;
+use ds::map::swiss;
 
-// Creates a new [[map]] with an initial number of groups and SipHash key.
+// Creates a new [[map]] with an initial number of groups and the SipHash key.
 //
 // n_groups must be greater than zero.
-export fn new(n_groups: size, siphash_key: [16]u8) (*map | errors::invalid | nomem) = {
-	if (n_groups == 0) {
-		return errors::invalid;
-	};
-
-	let v: size = 1;
-	for (v < n_groups) {
-		v *= 2;
-	};
-	let groups_count = v;
-
-	let gs: []group = match (alloc([group{...}...]: []group, groups_count)) {
-	case let a: []group => yield a;
+export fn new(
+	n_groups: size,
+	siphash_key: [16]u8,
+) (*map | errors::invalid | nomem) = {
+	let keybox = match (alloc(siphash_key)) {
+	case let kp: *[16]u8 => yield kp;
 	case nomem => return nomem;
 	};
-	for (let i = 0z; i < len(gs); i += 1) {
-		group_set_empty(&gs[i]);
+
+	let inner = match (swiss::new(
+		n_groups, &hash64, (keybox: *opaque),
+	)) {
+	case let sm: *swiss::map =>
+		yield (sm: *map::map);
+	case errors::invalid =>
+		free(keybox);
+		return errors::invalid;
+	case nomem =>
+		free(keybox);
+		return nomem;
 	};
 
-	let m = alloc(map {
+	let m = match (alloc(map {
 		vt = &_vt,
-		group_mask = groups_count - 1,
-		used = 0,
-		tombs = 0,
-		siphash_key = siphash_key,
-		groups = gs,
-	})?;
+		inner = inner,
+		key = keybox,
+	})) {
+	case let p: *map => yield p;
+	case nomem =>
+		map::finish(inner);
+		free(keybox);
+		return nomem;
+	};
 	return m;
 };

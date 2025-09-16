@@ -1,15 +1,19 @@
-// SPDX-License-Identifier: Apache-2.0 AND MPL-2.0
-// SPDX-FileCopyrightText: 2025 Runxi Yu <me@runxiyu.org>
+// SPDX-FileCopyrightText: 2024 The Cockroach Authors
+// SPDX-FileCopyrightText: 2025 Runxi Yu
 
 use ds::map;
 
-// Swiss-table based map from []u8 to *opaque, using SipHash.
+// Generic map based on swiss tables from []u8 to *opaque.
 //
 // You are advised to create these with [[new]].
 export type map = struct {
 	vt: map::map,
-	inner: *map::map,
-	key: *[16]u8,
+	group_mask: size,
+	used: size,
+	tombs: size,
+	hash64: *fn(hash_params: nullable *opaque, key: []u8) size,
+	hash_params: nullable *opaque,
+	groups: []group,
 };
 
 const _vt: map::vtable = map::vtable {
