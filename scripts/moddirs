@@ -1,0 +1,11 @@
+#!/bin/sh
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2021-2025 Hare authors <https://harelang.org>
+# SPDX-FileCopyrightText: 2025 Runxi Yu <https://runxiyu.org>
+
+for i in *; do
+	case "$i" in
+	.* | html | scripts) ;;
+	*) find -- "$i" -prune -type d ;;
+	esac
+done
