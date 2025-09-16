@@ -36,10 +36,11 @@ over a linear search, optimization should not be all-or-nothing; an appropriate
 amount of optimization such as using hashmaps in many places, is better than
 having linear searches everywhere where they are slow, and is also better than
 hand-crafting maps for every conceivable use case where linear searches are too
-slow. In practice, many codebases use numerous auxillary maps which share
-similar access patterns but may use differen types. Re-implementing a bespoke
-and non-general-purpose map for each key/value type is a complete waste of
-effort if access patterns are similar.
+slow. In practice,
+[many codebases](https://paste.sr.ht/~runxiyu/a0b49d84a3c9f3b35a05dd60993a3cd9d185bfff)
+use numerous auxillary maps which share similar access patterns but may use
+differen types. Re-implementing a bespoke and non-general-purpose map for each
+key/value type is likely a waste of effort if access patterns are similar.
 
 Also, as a consequence of not having generics, the data structures here are not
 type safe. Structures here typically use `[]u8` keys and `*opaque` values.
