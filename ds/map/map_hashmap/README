@@ -1,0 +1,5 @@
+map_hashmap: key-value map implemented as a generic hashmap
+
+This module provides a simple implementation of a hashmap from []u8 to *opaque.
+The hash algorithm and fallback collision resolution strategy are both
+configurable.

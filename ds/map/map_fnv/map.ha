@@ -4,14 +4,13 @@
 
 use ds::map;
 
-// A simple hash map from byte strings to opaque pointers, using SipHash for
+// A simple hash map from byte strings to opaque pointers, using FNV for
 // hashing and fallback maps for collision resolution.
 //
 // You are advised to create these with [[new]].
 export type map = struct {
 	vt: map::map,
-	n: size,
-	buckets: []*map::map,
+	inner: *map::map,
 };
 
 const _vt: map::vtable = map::vtable {

@@ -2,51 +2,44 @@
 // SPDX-FileCopyrightText: 2024 Drew DeVault <drew@ddevault.org>
 // SPDX-FileCopyrightText: 2025 Runxi Yu <me@runxiyu.org>
 
-use bytes;
 use errors;
-use hash;
-use hash::siphash;
 use ds::map;
+use ds::map::map_hashmap;
 
 // Creates a new [[map]] with a function that creates fallback maps, the number
 // of buckets, and the SipHash key.
-export fn new(make_fallback: *fn() (*map::map | nomem), n: size, siphash_key: [16]u8) (*map | errors::invalid | nomem) = {
-	if (n == 0) {
-		return errors::invalid;
+export fn new(
+	make_fallback: *fn() (*map::map | nomem),
+	n: size,
+	siphash_key: [16]u8,
+) (*map | errors::invalid | nomem) = {
+	let keybox = match (alloc(siphash_key)) {
+	case let kp: *[16]u8 => yield kp;
+	case nomem => return nomem;
 	};
 
-	let buckets: []*map::map = [];
-	for (let i = 0z; i < n; i += 1) {
-		let fb = match (make_fallback()) {
-		case let p: *map::map => yield p;
-		case nomem =>
-			for (let j = 0z; j < len(buckets); j += 1) {
-				map::finish(buckets[j]);
-			};
-			return nomem;
-		};
-		match (append(buckets, fb)) {
-		case void => yield;
-		case nomem =>
-			for (let j = 0z; j < len(buckets); j += 1) {
-				map::finish(buckets[j]);
-			};
-			return nomem;
-		};
+	let inner = match (map_hashmap::new(
+		make_fallback, n, &hash64, (keybox: *opaque),
+	)) {
+	case let hm: *map_hashmap::map =>
+		yield (hm: *map::map);
+	case errors::invalid =>
+		free(keybox);
+		return errors::invalid;
+	case nomem =>
+		free(keybox);
+		return nomem;
 	};
 
 	let m = match (alloc(map {
 		vt = &_vt,
-		n = n,
-		siphash_key = siphash_key,
-		buckets = buckets,
+		inner = inner,
+		key = keybox,
 	})) {
-	case let pm: *map => yield pm;
+	case let p: *map => yield p;
 	case nomem =>
-		for (let j = 0z; j < len(buckets); j += 1) {
-			map::finish(buckets[j]);
-		};
-		free(buckets);
+		map::finish(inner);
+		free(keybox);
 		return nomem;
 	};
 	return m;

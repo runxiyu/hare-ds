@@ -4,14 +4,16 @@
 
 use ds::map;
 
-// A simple hash map from byte strings to opaque pointers, using SipHash for
-// hashing and fallback maps for collision resolution.
+// A simple hash map from []u8 to *opaque pointers, using the user-provided hash
+// and collision resolution function.
 //
 // You are advised to create these with [[new]].
 export type map = struct {
 	vt: map::map,
-	inner: *map::map,
-	key: *[16]u8,
+	n: size,
+	buckets: []*map::map,
+	hash64: *fn(hash_params: nullable *opaque, key: []u8) size,
+	hash_params: nullable *opaque,
 };
 
 const _vt: map::vtable = map::vtable {

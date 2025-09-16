@@ -4,45 +4,30 @@
 
 use errors;
 use ds::map;
+use ds::map::map_hashmap;
 
 // Creates a new [[map]] with the given number of buckets.
 // make_fallback is a function that creates per-bucket fallback maps.
-export fn new(make_fallback: *fn() (*map::map | nomem), n: size) (*map | errors::invalid | nomem) = {
-	if (n == 0) {
+export fn new(
+	make_fallback: *fn() (*map::map | nomem),
+	n: size,
+) (*map | errors::invalid | nomem) = {
+	let inner = match (map_hashmap::new(make_fallback, n, &hash64, null)) {
+	case let hm: *map_hashmap::map =>
+		yield (hm: *map::map);
+	case errors::invalid =>
 		return errors::invalid;
-	};
-
-	let buckets: []*map::map = [];
-	for (let i = 0z; i < n; i += 1) {
-		let fb = match (make_fallback()) {
-		case let p: *map::map => yield p;
-		case nomem =>
-			for (let j = 0z; j < len(buckets); j += 1) {
-				map::finish(buckets[j]);
-			};
-			return nomem;
-		};
-		match (append(buckets, fb)) {
-		case void => yield;
-		case nomem =>
-			for (let j = 0z; j < len(buckets); j += 1) {
-				map::finish(buckets[j]);
-			};
-			return nomem;
-		};
+	case nomem =>
+		return nomem;
 	};
 
 	let m = match (alloc(map {
 		vt = &_vt,
-		n = n,
-		buckets = buckets,
+		inner = inner,
 	})) {
-	case let pm: *map => yield pm;
+	case let p: *map => yield p;
 	case nomem =>
-		for (let j = 0z; j < len(buckets); j += 1) {
-			map::finish(buckets[j]);
-		};
-		free(buckets);
+		map::finish(inner);
 		return nomem;
 	};
 	return m;

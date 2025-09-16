@@ -6,9 +6,6 @@ use ds::map;
 
 // Frees resources associated with a [[map]].
 export fn finish(m: *map) void = {
-	for (let i = 0z; i < m.n; i += 1) {
-		map::finish(m.buckets[i]);
-	};
-	free(m.buckets);
+	map::finish(m.inner);
 	free(m);
 };
