@@ -1,1 +1,0 @@
-map_slice_basic: trivial key-value map backed by a single slice

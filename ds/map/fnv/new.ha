@@ -4,42 +4,30 @@
 
 use errors;
 use ds::map;
-use ds::map::map_hashmap;
+use ds::map::hashmap;
 
-// Creates a new [[map]] with a function that creates fallback maps, the number
-// of buckets, and the SipHash key.
+// Creates a new [[map]] with the given number of buckets.
+// make_fallback is a function that creates per-bucket fallback maps.
 export fn new(
 	make_fallback: *fn() (*map::map | nomem),
 	n: size,
-	siphash_key: [16]u8,
 ) (*map | errors::invalid | nomem) = {
-	let keybox = match (alloc(siphash_key)) {
-	case let kp: *[16]u8 => yield kp;
-	case nomem => return nomem;
-	};
-
-	let inner = match (map_hashmap::new(
-		make_fallback, n, &hash64, (keybox: *opaque),
-	)) {
-	case let hm: *map_hashmap::map =>
+	let inner = match (hashmap::new(make_fallback, n, &hash64, null)) {
+	case let hm: *hashmap::map =>
 		yield (hm: *map::map);
 	case errors::invalid =>
-		free(keybox);
 		return errors::invalid;
 	case nomem =>
-		free(keybox);
 		return nomem;
 	};
 
 	let m = match (alloc(map {
 		vt = &_vt,
 		inner = inner,
-		key = keybox,
 	})) {
 	case let p: *map => yield p;
 	case nomem =>
 		map::finish(inner);
-		free(keybox);
 		return nomem;
 	};
 	return m;

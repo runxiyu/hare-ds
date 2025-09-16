@@ -8,7 +8,7 @@ use hash::siphash;
 fn hash64(params: nullable *opaque, key: []u8) size = {
 	let keyptr = match (params) {
 	case null =>
-		abort("map_siphash: missing key");
+		abort("ds::map::siphash: missing key");
 	case let p: *opaque =>
 		yield (p: *[16]u8);
 	};
