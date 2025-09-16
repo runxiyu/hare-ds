@@ -1,7 +1,5 @@
 # hare-ds — Data structures for Hare
 
-**Work in progress.**
-
 This module provides various general-purpose data structures for use in the
 Hare programming language.
 
