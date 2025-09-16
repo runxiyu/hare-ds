@@ -9,9 +9,6 @@ use ds::map;
 
 // Gets an item from a [[map]] by key, returning void if not found.
 export fn get(m: *map, key: []u8) (*opaque | void) = {
-	let h = siphash::siphash(2, 4, &m.siphash_key);
-	defer hash::close(&h);
-	hash::write(&h, key);
-	let b = m.buckets[siphash::sum(&h): size % m.n];
+	let b = m.buckets[hash64(m, key) % m.n];
 	return map::get(b, key);
 };

@@ -26,11 +26,11 @@ fn group_set_empty(g: *group) void = {
 
 fn is_full_ctrl(c: u8) bool = (c & 0x80) == 0 && c != CTRL_DELETED;
 
-fn hash64(m: *map, key: []u8) u64 = {
+fn hash64(m: *map, key: []u8) size = {
 	let h = siphash::siphash(2, 4, &m.siphash_key);
 	defer hash::close(&h);
 	hash::write(&h, key);
-	return siphash::sum(&h);
+	return siphash::sum(&h): size;
 };
 
 fn h1(h: u64) u64 = h >> 7u64;
@@ -111,7 +111,7 @@ fn resize(m: *map, new_groups_len: size) (void | nomem) = {
 };
 
 fn unchecked_put(m: *map, key: []u8, val: nullable *opaque) void = {
-	let hv = hash64(m, key);
+	let hv = hash64(m, key): u64;
 	let t = h2(hv);
 	let mask = m.group_mask;
 	let off: size = (h1(hv): size) & mask;

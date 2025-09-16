@@ -7,7 +7,7 @@ use bytes;
 // Deletes an item from a [[map]]. Returns the removed value or void.
 export fn del(m: *map, key: []u8) (*opaque | void) = {
 	if (len(m.groups) == 0) return;
-	let hv = hash64(m, key);
+	let hv = hash64(m, key): u64;
 	let t = h2(hv);
 	let mask = m.group_mask;
 	let off: size = (h1(hv): size) & mask;
