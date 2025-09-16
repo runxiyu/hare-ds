@@ -5,7 +5,7 @@
 use ds::map;
 
 // A simple hash map from byte strings to opaque pointers, using SipHash for
-// hashing and a linked list to resolve collisions.
+// hashing and a basic linear search through a slice to resolve collisions.
 //
 // You are advised to create these with [[new]].
 export type map = struct {
