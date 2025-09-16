@@ -22,7 +22,7 @@ export fn new(
 	};
 	let groups_count = v;
 
-	let gs: []group = match (alloc([group{...}...]: []group, groups_count)) {
+	let gs = match (alloc([group{...}...], groups_count)) {
 	case let a: []group => yield a;
 	case nomem => return nomem;
 	};

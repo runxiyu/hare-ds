@@ -72,7 +72,7 @@ fn rehash_in_place(m: *map) void = {
 
 fn resize(m: *map, new_groups_len: size) (void | nomem) = {
 	if (new_groups_len == 0) new_groups_len = 1;
-	let gs: []group = match (alloc([group{...}...]: []group, new_groups_len)) {
+	let gs = match (alloc([group{...}...], new_groups_len)) {
 	case let a: []group => yield a;
 	case nomem => return nomem;
 	};

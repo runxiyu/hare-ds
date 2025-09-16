@@ -88,10 +88,14 @@ fn insert_nonfull(m: *map, x: *node, key: []u8, val: *opaque) (void | nomem) = {
 
 	if (len(x.children[i].keys) == 2 * m.t - 1) {
 		split_child(m, x, i)?;
-		if (cmp_u8slice((&key: const *opaque),
-				(&x.keys[i]: const *opaque)) > 0) {
-			insert_nonfull(m, x.children[i + 1], key, val)?;
+		let cmp = cmp_u8slice((&key: const *opaque),
+			(&x.keys[i]: const *opaque));
+		if (cmp == 0) {
+			x.vals[i] = val;
 			return;
+		};
+		if (cmp > 0) {
+			i += 1;
 		};
 	};
 	insert_nonfull(m, x.children[i], key, val)?;
@@ -169,8 +173,9 @@ fn ensure_child_has_space(m: *map, x: *node, i: size) void = {
 fn pop_max(m: *map, x: *node) ([]u8, *opaque) = {
 	let cur = x;
 	for (!cur.leaf) {
+		let last_before = len(cur.children) - 1;
+		ensure_child_has_space(m, cur, last_before);
 		let last = len(cur.children) - 1;
-		ensure_child_has_space(m, cur, last);
 		cur = cur.children[last];
 	};
 	let k = cur.keys[len(cur.keys) - 1];
@@ -232,5 +237,8 @@ fn delete_rec(m: *map, x: *node, key: []u8) (*opaque | void) = {
 	};
 
 	ensure_child_has_space(m, x, i);
+	if (i >= len(x.children)) {
+		i = len(x.children) - 1;
+	};
 	return delete_rec(m, x.children[i], key);
 };
