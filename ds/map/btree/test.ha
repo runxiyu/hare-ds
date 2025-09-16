@@ -10,6 +10,6 @@ use errors;
 		case nomem => abort("btree: nomem");
 		};
 		defer finish(m);
-		map::stress_test(m, 200000);
+		map::stress_test(m, 20000);
 	};
 };

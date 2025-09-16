@@ -6,5 +6,5 @@ use ds::map;
 	case nomem => abort("slice_basic: nomem");
 	};
 	defer finish(m);
-	map::stress_test(m, 2000);
+	map::stress_test(m, 20000);
 };

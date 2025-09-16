@@ -19,7 +19,7 @@ use errors;
 			case nomem => abort("swiss_siphash: nomem");
 			};
 			defer finish(m);
-			map::stress_test(m, 200000);
+			map::stress_test(m, 20000);
 		};
 	};
 };

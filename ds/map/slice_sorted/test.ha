@@ -1,10 +1,10 @@
 use ds::map;
 
-@test fn test() void = {
+@test fn test_2000() void = {
 	let m: *map = match (new()) {
 	case let p: *map => yield p;
 	case nomem => abort("slice_sorted: nomem");
 	};
 	defer finish(m);
-	map::stress_test(m, 1000);
+	map::stress_test(m, 2000);
 };

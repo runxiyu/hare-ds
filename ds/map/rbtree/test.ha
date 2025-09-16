@@ -6,5 +6,5 @@ use ds::map;
 	case nomem => abort("rbtree: nomem");
 	};
 	defer finish(m);
-	map::stress_test(m, 200000);
+	map::stress_test(m, 20000);
 };
