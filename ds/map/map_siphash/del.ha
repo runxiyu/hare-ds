@@ -5,19 +5,13 @@
 use bytes;
 use hash;
 use hash::siphash;
+use ds::map;
 
 // Deletes an item from a [[map]].
 export fn del(m: *map, key: []u8) (*opaque | void) = {
-	let hash = siphash::siphash(2, 4, &m.siphash_key);
-	defer hash::close(&hash);
-	hash::write(&hash, key);
-	let bucket = &m.buckets[siphash::sum(&hash): size % m.n];
-	for (let i = 0z; i < len(bucket); i += 1) {
-		if (bytes::equal(bucket[i].0, key)) {
-			let item = bucket[i];
-			delete(bucket[i]);
-			return item.1;
-		};
-	};
+	let h = siphash::siphash(2, 4, &m.siphash_key);
+	defer hash::close(&h);
+	hash::write(&h, key);
+	let b = m.buckets[siphash::sum(&h): size % m.n];
+	return map::del(b, key);
 };
-

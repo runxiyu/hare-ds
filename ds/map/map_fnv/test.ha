@@ -1,9 +1,42 @@
 use errors;
 use strings;
 use ds::map;
+use ds::map::map_slice_basic;
+use ds::map::map_slice_sorted;
+use ds::map::map_btree;
+use ds::map::map_rbtree;
 
-@test fn roundtrip() void = {
-	let m: *map = match (new(16)) {
+fn mk_slice_basic() (*map::map | nomem) = {
+	match (map_slice_basic::new()) {
+	case let p: *map_slice_basic::map => return (p: *map::map);
+	case nomem => return nomem;
+	};
+};
+
+fn mk_slice_sorted() (*map::map | nomem) = {
+	match (map_slice_sorted::new()) {
+	case let p: *map_slice_sorted::map => return (p: *map::map);
+	case nomem => return nomem;
+	};
+};
+
+fn mk_btree() (*map::map | nomem) = {
+	match (map_btree::new(2)) {
+	case let p: *map_btree::map => return (p: *map::map);
+	case errors::invalid => abort("map_btree::new(2) invalid (unexpected)");
+	case nomem => return nomem;
+	};
+};
+
+fn mk_rbtree() (*map::map | nomem) = {
+	match (map_rbtree::new()) {
+	case let p: *map_rbtree::map => return (p: *map::map);
+	case nomem => return nomem;
+	};
+};
+
+fn run_case(make_fallback: *fn() (*map::map | nomem)) void = {
+	let m: *map = match (new(make_fallback, 16)) {
 	case let p: *map => yield p;
 	case errors::invalid => abort("unexpected errors::invalid");
 	case nomem => abort("unexpected nomem");
@@ -64,4 +97,20 @@ use ds::map;
 	case *opaque =>
 		abort("del(k2) must be void after prior delete");
 	};
+};
+
+@test fn roundtrip_with_slice_basic() void = {
+	run_case(&mk_slice_basic);
+};
+
+@test fn roundtrip_with_slice_sorted() void = {
+	run_case(&mk_slice_sorted);
+};
+
+@test fn roundtrip_with_btree() void = {
+	run_case(&mk_btree);
+};
+
+@test fn roundtrip_with_rbtree() void = {
+	run_case(&mk_rbtree);
 };

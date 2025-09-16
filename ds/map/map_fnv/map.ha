@@ -5,13 +5,13 @@
 use ds::map;
 
 // A simple hash map from byte strings to opaque pointers, using SipHash for
-// hashing and a basic linear search through a slice to resolve collisions.
+// hashing and fallback maps for collision resolution.
 //
 // You are advised to create these with [[new]].
 export type map = struct {
 	vt: map::map,
 	n: size,
-	buckets: [][]([]u8, *opaque),
+	buckets: []*map::map,
 };
 
 const _vt: map::vtable = map::vtable {

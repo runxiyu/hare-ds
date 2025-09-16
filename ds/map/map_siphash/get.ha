@@ -5,16 +5,13 @@
 use bytes;
 use hash;
 use hash::siphash;
+use ds::map;
 
 // Gets an item from a [[map]] by key, returning void if not found.
 export fn get(m: *map, key: []u8) (*opaque | void) = {
-	let hash = siphash::siphash(2, 4, &m.siphash_key);
-	defer hash::close(&hash);
-	hash::write(&hash, key);
-	let bucket = &m.buckets[siphash::sum(&hash): size % m.n];
-	for (let i = 0z; i < len(bucket); i += 1) {
-		if (bytes::equal(bucket[i].0, key)) {
-			return bucket[i].1;
-		};
-	};
+	let h = siphash::siphash(2, 4, &m.siphash_key);
+	defer hash::close(&h);
+	hash::write(&h, key);
+	let b = m.buckets[siphash::sum(&h): size % m.n];
+	return map::get(b, key);
 };
