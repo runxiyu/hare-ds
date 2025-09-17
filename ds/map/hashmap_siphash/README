@@ -1,4 +1,4 @@
-siphash: SipHash hashmap
+hashmap_siphash: SipHash hashmap
 
 This module provides a simple implementation of a hashmap using the SipHash
 hashing algorithm for collision-resistant mapping. It is designed for

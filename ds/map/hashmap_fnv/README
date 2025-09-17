@@ -1,4 +1,4 @@
-fnv: Fowler-Noll-Vo hashmap
+hashmap_fnv: Fowler-Noll-Vo hashmap
 
 This module provides a simple implementation of a hashmap using the
 Fowler-Noll-Vo (FNV) hashing algorithm.
