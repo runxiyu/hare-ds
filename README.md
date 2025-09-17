@@ -3,6 +3,40 @@
 This module provides various general-purpose data structures for use in the
 Hare programming language.
 
+## Implemented
+
+- Map-like interface
+  - B-tree map
+  - Red-black tree map
+  - Generic hashmap
+    - Convenience wrapper: Fowler-Noll-Vo hashmap
+    - Convenience wrapper: SipHash hashmap
+  - Generic Swiss table
+    - Convenience wrapper: Fowler-Noll-Vo Swiss table
+    - Convenience wrapper: SipHash Swiss table
+  - Trivial linear slice map
+  - Sorted binary search slice map
+- Set-like interface
+  - Generic bloom filter
+    - Convenience wrapper: Fowler-Noll-Vo bloom filter
+    - Convenience wrapper: SipHash bloom filter
+
+## Planned
+
+- Map-like interface
+  - B+-tree map
+  - LSM-tree map
+  - Order-statistic tree map
+  - Robin-Hood hashmap
+  - Generic LRU cache
+  - Generic LFU cache
+  - TinyLFU cache
+  - Trie map (maybe radix tree?)
+- Set-like interface
+  - Cuckoo filter
+- Ring buffer
+- Binary heap
+
 ## Note
 
 The maintainers of Hare would not recommend using this library.
