@@ -8,6 +8,14 @@ use ds::map::hashmap;
 
 // Creates a new [[map]] with a function that creates fallback maps, the number
 // of buckets, and the SipHash key.
+//
+// Hash collisions are virtually inevitable for typical map sizes. Therefore,
+// you are required to supply a function that helps creates fallback maps, which
+// are used to distinguish between items when they collide in hash.
+//
+// Alternatively, you may wish to use [[ds::map::swiss]] for Swiss Tables,
+// which do not require a custom fallback mechanism and are typically more
+// performant than hashmaps.
 export fn new(
 	make_fallback: *fn() (*map::map | nomem),
 	n: size,
