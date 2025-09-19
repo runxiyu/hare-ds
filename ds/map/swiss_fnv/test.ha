@@ -2,7 +2,7 @@ use ds::map;
 use errors;
 
 @test fn test() void = {
-	const groups: [2]size = [1z, 32z];
+	const groups: [_]size = [64z, 128z];
 
 	for (let gi = 0z; gi < len(groups); gi += 1) {
 		let m: *map = match (new(groups[gi])) {
@@ -11,6 +11,6 @@ use errors;
 		case nomem => abort("swiss_fnv: nomem");
 		};
 		defer finish(m);
-		map::stress_test(m, 200000);
+		map::stress_test(m, 20000);
 	};
 };

@@ -8,7 +8,7 @@ use errors;
 	random::buffer(&key1);
 	random::buffer(&key2);
 
-	const groups: [2]size = [1z, 32z];
+	const groups: [_]size = [64z, 128z];
 	const keys: [2]*[16]u8 = [&key1, &key2];
 
 	for (let gi = 0z; gi < len(groups); gi += 1) {

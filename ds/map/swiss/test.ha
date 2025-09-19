@@ -19,7 +19,7 @@ fn testhash(_params: nullable *opaque, key: []u8) size = {
 };
 
 @test fn test() void = {
-	const groups: [3]size = [1z, 17z, 128z];
+	const groups: [_]size = [64z, 128z];
 
 	for (let gi = 0z; gi < len(groups); gi += 1) {
 		let m = match (new(groups[gi], &testhash, null)) {

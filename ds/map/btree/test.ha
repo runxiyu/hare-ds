@@ -2,7 +2,7 @@ use ds::map;
 use errors;
 
 @test fn test() void = {
-	const ts: [3]size = [2z, 3z, 8z];
+	const ts: [_]size = [2z, 3z, 8z];
 	for (let i = 0z; i < len(ts); i += 1) {
 		let m: *map = match (new(ts[i])) {
 		case let p: *map => yield p;

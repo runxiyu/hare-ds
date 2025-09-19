@@ -15,7 +15,7 @@ fn mk_slice_basic() (*map::map | nomem) = {
 };
 
 @test fn test() void = {
-	const buckets: [_]size = [128z, 256z];
+	const buckets: [_]size = [64z, 128z];
 	const makers: [_]*fn() (*map::map | nomem) = [&mk_slice_basic];
 
 	for (let bi = 0z; bi < len(buckets); bi += 1) {
