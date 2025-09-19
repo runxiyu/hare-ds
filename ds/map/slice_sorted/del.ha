@@ -10,7 +10,6 @@ export fn del(m: *map, key: []u8) (*opaque | void) = {
 	case let idx: size =>
 		let v = m.items[idx].1;
 		delete(m.items[idx]);
-		resort(m);
 		return v;
 	case void =>
 		return;
